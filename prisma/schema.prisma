@@ -32,7 +32,7 @@ model Balance {
 
 model Cliente {
   id        Int      @id @default(autoincrement())
-  rut       String
+  rut       String   @unique
   nombre    String
   direccion String?
   telefono  String?

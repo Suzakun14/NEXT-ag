@@ -10,16 +10,16 @@ export async function GET(request: Request) {
     if (rut) {
       balances = await db.balance.findMany({
         where: {
-          clientRut: rut
+          rut: rut
         },
         orderBy: {
-          createdAt: 'desc'
+          id: 'desc'
         }
       })
     } else {
       balances = await db.balance.findMany({
         orderBy: {
-          createdAt: 'desc'
+          id: 'desc'
         }
       })
     }
@@ -34,22 +34,26 @@ export async function GET(request: Request) {
   }
 }
 
-// src/app/api/balances/route.ts - Adaptado a tu schema
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { clientRut, accounts, totals } = body
+    const { clientRut, accounts, totals, clientName } = body
 
-    // Verificar que el usuario existe
-    const usuario = await db.usuario.findUnique({
-      where: { rut: clientRut }
-    })
-
-    if (!usuario) {
+    if (!clientRut) {
       return NextResponse.json(
-        { error: 'Usuario no encontrado' },
-        { status: 404 }
+        { error: 'RUT del cliente es requerido' },
+        { status: 400 }
       )
+    }
+
+    // Verificar que el usuario existe (opcional)
+    let usuario = null
+    try {
+      usuario = await db.usuario.findUnique({
+        where: { rut: clientRut }
+      })
+    } catch (error) {
+      console.log('Usuario no encontrado en tabla usuarios, continuando...')
     }
 
     // Guardar en tu tabla balances
@@ -59,6 +63,7 @@ export async function POST(request: Request) {
         data: {
           accounts,
           totals,
+          clientName: clientName || `Cliente ${clientRut}`,
           fecha: new Date().toISOString()
         }
       }

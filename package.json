@@ -10,7 +10,14 @@
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
-    "db:reset": "prisma migrate reset"
+    "db:reset": "prisma migrate reset",
+    "prisma:generate": "dotenv -e .env.local prisma generate",
+    "prisma:push": "dotenv -e .env.local prisma db push",
+    "debug": "node debug.js",
+    "health": "curl -f http://localhost:3000/api/health || echo 'Health check failed'",
+    "test:db": "node -e \"require('./debug.js')\"",
+    "logs": "tail -f dev.log",
+    "logs:prod": "tail -f server.log"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -89,6 +96,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv-cli": "^10.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
     "nodemon": "^3.1.10",
