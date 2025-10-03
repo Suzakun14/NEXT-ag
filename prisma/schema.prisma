@@ -1,0 +1,42 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  rut        String   @id
+  empresa    String?
+  direccion  String?
+  giro       String?
+  ejercicio  Int?
+  comuna     String?
+  codigo     String?
+  
+  balances   Balance[]
+  @@map("usuarios")
+}
+
+model Balance {
+  id        Int      @id @default(autoincrement())
+  rut       String
+  fecha     DateTime @default(now())
+  data      Json
+  
+  usuario   Usuario   @relation(fields: [rut], references: [rut])
+  @@map("balances")
+}
+
+model Cliente {
+  id        Int      @id @default(autoincrement())
+  rut       String
+  nombre    String
+  direccion String?
+  telefono  String?
+  
+  @@map("clientes")
+}
